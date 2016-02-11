@@ -32,7 +32,7 @@ if __name__ == '__main__':
     face_cascade=cv2.CascadeClassifier(haar_file_face)
 
     # Waiting here until first image appears
-    rate = rospy.Rate(20) # 30hz
+    rate = rospy.Rate(30) # 30hz
     while not rospy.is_shutdown(): 
         if img.encoding != '':
             break

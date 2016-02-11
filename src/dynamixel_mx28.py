@@ -162,10 +162,10 @@ class dynamixel_mx28:
         #print("done getting it")        
         
         if (self.left_limit + self.right_limit != 0): # if limits are set then enforce them  
-            if (self.right_limit > dxl_position > 1024 and set_speed > 1024): # moving CW
+            if (self.right_limit > dxl_position > 0 and set_speed > 1024): # moving CW
                     set_speed = 1024
                     print("1024ing === ", end='')
-            elif (512 < dxl_position < self.left_limit and set_speed < 1024): # Moving CCW
+            elif (1023 < dxl_position < self.left_limit and set_speed < 1024): # Moving CCW
                     print("zeroing === ", end='')
                     set_speed = 0   
 
