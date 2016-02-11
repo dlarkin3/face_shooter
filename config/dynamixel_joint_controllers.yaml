@@ -6,10 +6,10 @@ pan_controller:
     joint_name: pan_joint
     joint_speed: 30.17
     motor: 
-        id: 4
+        id: 5
         init: 0
-        max: 200
-        min: 800
+        max: 0
+        min: 0
 
 tilt_controller:
     controller:
@@ -19,7 +19,7 @@ tilt_controller:
     joint_name: tilt_joint
     joint_speed: 30.17
     motor:
-        id: 2
+        id: 6
         init: 512
-        min: 375
-        max: 600
+        min: 0
+        max: 0

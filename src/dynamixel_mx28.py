@@ -4,7 +4,7 @@ import rospy
 from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 
-# Control table address
+# Control table  address
 ADDR_CW_ANGLE_LIMIT         = 6
 ADDR_CCW_ANGLE_LIMIT        = 8
 ADDR_TORQUE_ENABLE       = 24               # Control table address is different in Dynamixel model
@@ -156,8 +156,9 @@ class dynamixel_mx28:
             dev_id = self.dxl_id
         #print("getting pos and speed", end= " ")
         dxl_position=self.get_present_position()  
-        time.sleep(0.01) # Possibly fixed a problem with locking up this class.
-        dxl_speed=self.get_present_speed()
+        time.sleep(0.02) # Possibly fixed a problem with locking up this class.
+        #dxl_speed=self.get_present_speed()
+        time.sleep(0.02) # Possibly fixed a problem with locking up this class.
         #print("done getting it")        
         
         if (self.left_limit + self.right_limit != 0): # if limits are set then enforce them  
@@ -167,21 +168,21 @@ class dynamixel_mx28:
             elif (512 < dxl_position < self.left_limit and set_speed < 1024): # Moving CCW
                     print("zeroing === ", end='')
                     set_speed = 0   
-                
+
         if (self.brake):
             #print("==========BRAKE ON==========", end='')
-            if (dxl_speed >  1024):
+            if (set_speed >  1024):
                 set_speed = 1024
             else:
                 set_speed = 0     
-                             
+
         #print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state), end=' ' )  
         
         dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MOVING_SPEED, set_speed)
         if dxl_comm_result != COMM_SUCCESS:
-            print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+            print("NOT COMM SUCCES: %s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))     
+            print("TRANSMISSION ERROR: %s" % self.packetHandler.getRxPacketError(dxl_error))     
 
     def toggle_brake(self,dev_id=None):
         if dev_id is None:
@@ -202,14 +203,10 @@ class dynamixel_mx28:
             print("%s" % self.packetHandler.getRxPacketError(dxl_error))          
         
 if __name__ == "__main__":
-    dyna1 = dynamixel_mx28(dxl_id=1)   
-    dyna2 = dynamixel_mx28(dxl_id=2)   
-    dyna3 = dynamixel_mx28(dxl_id=3)
-    dyna4 = dynamixel_mx28(dxl_id=4) 
+    dyna1 = dynamixel_mx28(dxl_id=5)   
     dyna1.set_wheel_mode()
-    dyna2.set_wheel_mode()
     dyna1.set_torque(1)
     while(1):
-        print("Pos1: %d, Pose2: " % (dyna1.get_present_position()))
+        print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(5),dyna1.get_present_position(6)))
         time.sleep(0.3)
 
