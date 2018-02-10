@@ -1,0 +1,18 @@
+<launch>
+
+<!-- Launching USB CAM launch files and Dynamixel controllers -->
+  <include file="$(find face_shooter)/launch/start_tracking.launch"/> 
+  <include file="$(find face_shooter)/launch/controller_manager.launch"/> 
+  <include file="$(find face_shooter)/launch/controller_spawner.launch"/> 
+
+<!-- Starting face tracker node -->
+    <rosparam file="$(find face_shooter)/config/servo_param.yaml" command="load"/>
+   <node name="face_controller" pkg="face_shooter" type="face_tracker_controller" output="screen" />
+
+<!-- Starting ros serial to control trigger on the gun -->
+    <node name="serial_node_gun" pkg="rosserial_python" type="serial_node.py" output="screen" args="">
+        <param name="port" value="/dev/arduino" />
+    </node>
+
+</launch>
+
