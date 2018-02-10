@@ -1,4 +1,4 @@
-# Use extreme caution when using a loaded gun that fires automatically.
+# Use extreme caution when using a autonomously shooting loaded gun.
 ## This code controlls a pan tilt machanism with an airsoft rifle mounted on it. It locates a human face and then shoots it.
 
 ## Create an alias for each device
