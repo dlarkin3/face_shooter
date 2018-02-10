@@ -8,6 +8,6 @@
 4. `udevadm control --reload-rules`
 
 ## To manually adjust the pan or tilt from cli:
-o `rostopic pub -1 /tilt_controller/command std_msgs/Float64 -- 0.5`
-o `rostopic pub -1 /pan_controller/command std_msgs/Float64 -- 0.5`
+* `rostopic pub -1 /tilt_controller/command std_msgs/Float64 -- 0.5`
+* `rostopic pub -1 /pan_controller/command std_msgs/Float64 -- 0.5`
 
