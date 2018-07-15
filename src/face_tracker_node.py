@@ -26,8 +26,6 @@ if __name__ == '__main__':
     face_tracking = rospy.get_param("face_tracking","1")
     display_original_image = rospy.get_param("display_original_image","1")
     display_tracking_image = rospy.get_param("display_tracking_image","1")
-    center_offset = rospy.get_param("center_offset","5")
-    screenmaxx = rospy.get_param("screenmaxx","640")
     
     # Create the classifier
     face_cascade=cv2.CascadeClassifier(haar_file_face)
@@ -61,4 +59,4 @@ if __name__ == '__main__':
         cv2.waitKey(1) 
         rate.sleep()
     
-    cv2.DestroyAllWindows()
+    cv2.destroyAllWindows()

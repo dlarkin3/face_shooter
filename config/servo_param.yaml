@@ -1,6 +1,6 @@
 servomaxx: 0.5   #max degree servo horizontal (x) can turn
+servomaxy: 0.5   #max degree servo horizontal (x) can turn
 servomin: -0.5   # Min degree servo horizontal (x) can turn
-step_distancex: 0.01 #x servo rotation steps
-
-
+step_distancex: 0.005 #x servo rotation steps
+step_distancey: 0.005 #x servo rotation steps
 
