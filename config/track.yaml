@@ -6,4 +6,5 @@ display_original_image: 0
 display_tracking_image: 1
 center_offset: 5  #offset pixels from actual center to right and left
 screenmaxx: 640 
+screenmaxy: 480 
 
