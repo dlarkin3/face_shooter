@@ -54,10 +54,10 @@ if __name__ == '__main__':
                 pub.publish(center)
             if (display_tracking_image):        
                 cv2.imshow('tracking',frame)     
-        except CvBridgeError, e:
-            print(e)        
+        #except CvBridgeError, e:
+        except Exception as e:
+            print(e)
         
-
         cv2.waitKey(1) 
         rate.sleep()
     
