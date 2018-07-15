@@ -44,6 +44,7 @@ if __name__ == '__main__':
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
             for index,(x,y,w,h) in enumerate(faces):
+                print("Frame is: %d by %d and x,y %d, %d" %(frame.shape[1],frame.shape[0],x,y))
                 frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
                 # publish center of face
                 center.x=x+w/2
