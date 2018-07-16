@@ -60,9 +60,9 @@ if __name__ == '__main__':
     img_center.y = screenmaxy/2
     target_sub = rospy.Subscriber("/face_centroid", Vector3, target_callback) 
     pub_pan.publish(x_correction)
-
-    rate = rospy.Rate(5) # 20hz
-    while not rospy.is_shutdown():
+    rospy.spin()
+    #rate = rospy.Rate(5) # 20hz
+    #while not rospy.is_shutdown():
        
 
-        rate.sleep()
+        #rate.sleep()

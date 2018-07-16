@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
-
+import rospy
 from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 
@@ -154,9 +154,11 @@ class dynamixel_mx28:
     def set_moving_speed(self,set_speed,dev_id=None):
         if dev_id is None:
             dev_id = self.dxl_id
-        
-        dxl_position=self.get_present_position()     
-        dxl_speed=self.get_present_speed()        
+        #print("getting pos and speed", end= " ")
+        dxl_position=self.get_present_position()  
+        time.sleep(0.01) # Possibly fixed a problem with locking up this class.
+        dxl_speed=self.get_present_speed()
+        #print("done getting it")        
         
         if (self.left_limit + self.right_limit != 0): # if limits are set then enforce them  
             if (self.right_limit > dxl_position > 1024 and set_speed > 1024): # moving CW
@@ -173,13 +175,13 @@ class dynamixel_mx28:
             else:
                 set_speed = 0     
                              
-        #print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state), end=' ' )    
+        #print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state), end=' ' )  
         
         dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MOVING_SPEED, set_speed)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
-            print("%s" % self.packetHandler.getRxPacketError(dxl_error))                                
+            print("%s" % self.packetHandler.getRxPacketError(dxl_error))     
 
     def toggle_brake(self,dev_id=None):
         if dev_id is None:

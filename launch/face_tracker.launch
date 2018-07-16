@@ -3,7 +3,7 @@
     <!-- Start the USB Camera node   -->
     <node name="uvc_camera" pkg="uvc_camera" type="uvc_camera_node" output="screen" ns="usb_cam">
         <param name="device" value="/dev/video0" />
-        <param name="fps" value="30" />
+        <param name="fps" value="20" />
         <param name="width" value="640" />
         <param name="height" value="480" />
         <param name="frame_id" value="usb_cam" />
