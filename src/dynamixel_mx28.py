@@ -159,11 +159,11 @@ class dynamixel_mx28:
         dxl_speed=self.get_present_speed()        
         
         if (self.left_limit + self.right_limit != 0): # if limits are set then enforce them  
-            if (dxl_position < self.right_limit and set_speed > 1024): 
+            if (self.right_limit > dxl_position > 1024 and set_speed > 1024): # moving CW
                     set_speed = 1024
-                    #print("1024ing === ", end='')
-            elif (dxl_position > self.left_limit and set_speed < 1024):
-                    #print("zeroing === ", end='')
+                    print("1024ing === ", end='')
+            elif (512 < dxl_position < self.left_limit and set_speed < 1024): # Moving CCW
+                    print("zeroing === ", end='')
                     set_speed = 0   
                 
         if (self.brake):
@@ -200,11 +200,14 @@ class dynamixel_mx28:
             print("%s" % self.packetHandler.getRxPacketError(dxl_error))          
         
 if __name__ == "__main__":
-    dyna1 = dynamixel_mx28(dxl_id=3)
-    dyna2 = dynamixel_mx28(dxl_id=4)   
+    dyna1 = dynamixel_mx28(dxl_id=1)   
+    dyna2 = dynamixel_mx28(dxl_id=2)   
+    dyna3 = dynamixel_mx28(dxl_id=3)
+    dyna4 = dynamixel_mx28(dxl_id=4) 
     dyna1.set_wheel_mode()
     dyna2.set_wheel_mode()
-    dyna1.set_torque(3)
-    dyna1.set_torque(4)
-    print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(), dyna2.get_present_position()))   
+    dyna1.set_torque(1)
+    while(1):
+        print("Pos1: %d, Pose2: " % (dyna1.get_present_position()))
+        time.sleep(0.3)
 

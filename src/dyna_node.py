@@ -4,10 +4,13 @@ import dynamixel_mx28 as dm28
 import rospy
 from geometry_msgs.msg import Vector3
 
-dyna = dm28.dynamixel_mx28(dxl_id=3)
+dyna = dm28.dynamixel_mx28(dxl_id=1)
 dyna.set_left_limit(3600)
 dyna.set_right_limit(1500)
+dyna.set_left_limit(220)
+dyna.set_right_limit(800)
 SET_POINT = 320
+target_point = Vector3()
 
 # Each time a target centroid is published then center the camera on it.
 def callback(data):
