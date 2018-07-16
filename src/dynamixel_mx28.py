@@ -7,25 +7,25 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 # Control table address
 ADDR_CW_ANGLE_LIMIT         = 6
 ADDR_CCW_ANGLE_LIMIT        = 8
-ADDR_MX_TORQUE_ENABLE       = 24               # Control table address is different in Dynamixel model
-ADDR_MX_LED_ONOFF           = 25               # http://emanual.robotis.com/docs/en/dxl/mx/mx-28/#control-table-of-ram-area
-ADDR_MX_D_GAIN              = 26
-ADDR_MX_I_GAIN              = 27
-ADDR_MX_P_GAIN              = 28
-ADDR_MX_GOAL_POSITION       = 30
-ADDR_MX_MOVING_SPEED        = 32
-ADDR_MX_TORQUE_LIMIT        = 34
-ADDR_MX_PRESENT_POSITION    = 36
-ADDR_MX_PRESENT_SPEED       = 38
-ADDR_MX_PRESENT_LOAD        = 40
-ADDR_MX_PRESENT_VOLTAGE     = 42
-ADDR_MX_PRESENT_TEMPERATURE = 43
-ADDR_MX_REGISTERED          = 44
-ADDR_MX_MOVING              = 46
-ADDR_MX_LOCK                = 47
-ADDR_MX_PUNCH               = 48
-ADDR_MX_REALTIME_TICK       = 50
-ADDR_MX_GOAL_ACCELERATION   = 73
+ADDR_TORQUE_ENABLE       = 24               # Control table address is different in Dynamixel model
+ADDR_LED_ONOFF           = 25               # http://emanual.robotis.com/docs/en/dxl/mx/mx-28/#control-table-of-ram-area
+ADDR_D_GAIN              = 26
+ADDR_I_GAIN              = 27
+ADDR_P_GAIN              = 28
+ADDR_GOAL_POSITION       = 30
+ADDR_MOVING_SPEED        = 32
+ADDR_TORQUE_LIMIT        = 34
+ADDR_PRESENT_POSITION    = 36
+ADDR_PRESENT_SPEED       = 38
+ADDR_PRESENT_LOAD        = 40
+ADDR_PRESENT_VOLTAGE     = 42
+ADDR_PRESENT_TEMPERATURE = 43
+ADDR_REGISTERED          = 44
+ADDR_MOVING              = 46
+ADDR_LOCK                = 47
+ADDR_PUNCH               = 48
+ADDR_REALTIME_TICK       = 50
+ADDR_GOAL_ACCELERATION   = 73
 
 PROTOCOL_VERSION            = 1.0               # See which protocol version is used in the Dynamixel
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
@@ -124,7 +124,7 @@ class dynamixel_mx28:
         if dev_id is None:
             dev_id = self.dxl_id
         dxl_position = 99999 # error code
-        dxl_position, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, dev_id, ADDR_MX_PRESENT_POSITION)
+        dxl_position, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, dev_id, ADDR_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
@@ -136,7 +136,7 @@ class dynamixel_mx28:
         if dev_id is None:
             dev_id = self.dxl_id
         dxl_speed = 99999 # error code
-        dxl_speed, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, dev_id, ADDR_MX_PRESENT_SPEED)
+        dxl_speed, dxl_comm_result, dxl_error = self.packetHandler.read2ByteTxRx(self.portHandler, dev_id, ADDR_PRESENT_SPEED)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
@@ -175,7 +175,7 @@ class dynamixel_mx28:
                              
         #print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state), end=' ' )    
         
-        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MX_MOVING_SPEED, set_speed)
+        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MOVING_SPEED, set_speed)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
@@ -193,7 +193,7 @@ class dynamixel_mx28:
     def set_torque(self,dev_id=None):
         if dev_id is None:
             dev_id = self.dxl_id            
-        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, dev_id, ADDR_MX_TORQUE_ENABLE, 0)
+        dxl_comm_result, dxl_error = self.packetHandler.write1ByteTxRx(self.portHandler, dev_id, ADDR_TORQUE_ENABLE, 0)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
