@@ -29,7 +29,6 @@ if __name__ == '__main__':
     
     # Create the classifier
     face_cascade=cv2.CascadeClassifier(haar_file_face)
-    center=Vector3()
     rate = rospy.Rate(20) # 20hz
     while not rospy.is_shutdown():
         #hello_str = "hello world %s" % rospy.get_time()
@@ -43,13 +42,17 @@ if __name__ == '__main__':
             # Gray scale image            
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            center=Vector3()
             for index,(x,y,w,h) in enumerate(faces):
-                print("Frame is: %d by %d and x,y %d, %d" %(frame.shape[1],frame.shape[0],x,y))
+                #print("Frame is: %d by %d and x,y %d, %d" %(frame.shape[1],frame.shape[0],x,y))
                 frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
                 # publish center of face
                 center.x=x+w/2
                 center.y=y+h/2
-                center.z=index # unique id for multiple faces, zero indexed
+                center.z=index+1 # unique id for multiple faces, zero indexed
+                pub.publish(center)
+            if center.z == 0: # No faces found so aim at center
+                center.x = 320
                 pub.publish(center)
             if (display_tracking_image):        
                 cv2.imshow('tracking',frame)     

@@ -2,7 +2,8 @@
 
 import dynamixel_mx28 as dm28              
 import rospy
-from std_msgs.msg import Float64
+from geometry_msgs.msg import Vector3
+
 
 dyna = dm28.dynamixel_mx28(dxl_id=3)
 dyna.set_left_limit(3600)
@@ -10,15 +11,19 @@ dyna.set_right_limit(1500)
 SET_POINT = 320
 
 def callback(data):
-    centroid = data.data
+    centroid = data.x
+    set_speed = 0
     error = SET_POINT - centroid
-    if error < 0:
+    if error > 0:
         # move cw
-        set_speed = error*3.2 - 0.3
+        set_speed = error
+    elif error < 0:
+        #move cw
+        set_speed = 1024 + abs(error)
     else:
-        #move ccw
-        set_speed = error*3.2 - 1023.7
-    dyna.set_moving_speed(set_speed)    
+        set_speed = 0
+    print("SetSpeed: %d, Error: %d" % (set_speed,error))
+    dyna.set_moving_speed(int(set_speed))
     
     
 def listener():
@@ -30,7 +35,7 @@ def listener():
     # run simultaneously.
     rospy.init_node('face_shooter', anonymous=True)
 
-    rospy.Subscriber("centroid", Float64, callback)
+    rospy.Subscriber("/face_centroid", Vector3, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()

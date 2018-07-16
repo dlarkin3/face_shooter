@@ -173,7 +173,7 @@ class dynamixel_mx28:
             else:
                 set_speed = 0     
                              
-        #print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state) )    
+        print("Speed: %d,%d Position: %d, movestate: %d" % (set_speed,dxl_speed,dxl_position,self.moving_state), end=' ' )    
         
         dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MX_MOVING_SPEED, set_speed)
         if dxl_comm_result != COMM_SUCCESS:
