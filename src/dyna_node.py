@@ -12,6 +12,7 @@ SET_POINT = 320
 # Each time a target centroid is published then center the camera on it.
 def callback(data):
     set_speed = 0
+    error = 0
     if data.z ==1: # For now only shoot the first target, ignore others
         centroid = data.x
         set_speed = 0
@@ -23,7 +24,7 @@ def callback(data):
             #move ccw
             set_speed = 1024 + abs(error)*0.5
 
-    #print("SetSpeed: %d, Error: %d" % (set_speed,error))
+    print("SetSpeed: %d, Error: %d" % (set_speed,error))
     dyna.set_moving_speed(int(set_speed))
     
     

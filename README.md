@@ -8,7 +8,7 @@
 4. `udevadm control --reload-rules`
 5. `exit` from su
 6. Install dependency:
-    `sudo apt-get install ros-kinetic-dynamixel-controllers ros-kinetic-usb-cam`
+    `sudo apt-get install ros-kinetic-dynamixel-controllers ros-kinetic-usb-cam ros-kinetic-uvc-camera`
 
 ## To manually adjust the pan or tilt from cli:
 * `rostopic pub -1 /tilt_controller/command std_msgs/Float64 -- 0.5`

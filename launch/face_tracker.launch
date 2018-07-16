@@ -9,7 +9,7 @@
         <param name="frame_id" value="usb_cam" />
     </node>
 
-    <!-- Start the node to track a face in an video stream  -->
+    <!-- Start the node to track a face in an video stream   -->
    <rosparam file="$(find face_shooter)/config/track.yaml" command="load"/>   
    <node name="face_tracker" pkg="face_shooter" type="face_tracker_node.py" output="screen"/>  
 
