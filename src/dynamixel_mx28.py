@@ -150,15 +150,16 @@ class dynamixel_mx28:
             self.moving_state = STOPPED   
               
         return dxl_speed # returns 99999 if not successful else returns valid position
-        
+
+    # Accepts speed as dynmixel values where 0 and 1024 both are 0.
     def set_moving_speed(self,set_speed,dev_id=None):
         if dev_id is None:
             dev_id = self.dxl_id
         #print("getting pos and speed", end= " ")
         dxl_position=self.get_present_position()  
-        time.sleep(0.02) # Possibly fixed a problem with locking up this class.
+        #time.sleep(0.02) # Possibly fixed a problem with locking up this class.
         #dxl_speed=self.get_present_speed()
-        time.sleep(0.02) # Possibly fixed a problem with locking up this class.
+        #time.sleep(0.02) # Possibly fixed a problem with locking up this class.
         #print("done getting it")        
         
         if (self.left_limit + self.right_limit != 0): # if limits are set then enforce them  
@@ -183,6 +184,15 @@ class dynamixel_mx28:
             print("NOT COMM SUCCES: %s" % self.packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("TRANSMISSION ERROR: %s" % self.packetHandler.getRxPacketError(dxl_error))     
+        
+    # set speed from -1024 to 1024. This method converts it to Dynamixel speed settings.
+    def set_moving_speed2(self,set_speed,dev_id=None):
+        #convert speed to dynamixel values
+        if set_speed > 0:
+            effort = set_speed
+        else:
+            effort = set_speed * -1 + 1024
+        self.set_moving_speed(effort,dev_id)
 
     def toggle_brake(self,dev_id=None):
         if dev_id is None:
@@ -205,8 +215,8 @@ class dynamixel_mx28:
 if __name__ == "__main__":
     dyna1 = dynamixel_mx28(dxl_id=5)   
     dyna1.set_wheel_mode()
-    dyna1.set_torque(1)
-    while(1):
-        print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(5),dyna1.get_present_position(6)))
+    dyna1.set_torque(5)
+    while(5):
+        print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(5),dyna1.get_present_position(5)))
         time.sleep(0.3)
 
