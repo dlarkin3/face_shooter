@@ -27,7 +27,6 @@ kD = 0.12 # 2. set to stop oscilation start with 10% of kP
 lastError = 0
 integral = 0
 
-
 outString = "time,actual,error,effort,P,I,D,kP,kI,kD,set_point,lastError\n"
 rospy.loginfo(outString)
 with open(logfile, 'a') as outFile:

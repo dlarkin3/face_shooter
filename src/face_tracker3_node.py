@@ -13,7 +13,7 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
 
     rospy.init_node("python_cam")
-    pub = rospy.Publisher('/face_centroid', Vector3, queue_size=1)  
+    pub = rospy.Publisher('/face_centroid', Vector3, queue_size=10)  
     
     # Load params if provided else use the defaults
     output_image_topic = rospy.get_param("output_image_topic","/face_detector/raw_image")
