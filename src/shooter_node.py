@@ -110,7 +110,7 @@ if __name__ == '__main__':
             control_effort = find_linear_control(target_error,last_error)
             dyna.set_moving_speed2(int(control_effort))      
             # This section is used to watch timing for development purposes.
-            if (-15 < target_error < 15):
+            if (-25 < target_error < 25):
                 trigger[0] = 1
             else:
                 trigger[0] = 0

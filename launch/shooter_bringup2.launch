@@ -15,7 +15,7 @@
 
 <!--  
 
-rosrun robot_upstart install face_shooter/launch/face_shooter.launch
+rosrun robot_upstart install face_shooter/launch/shooter_bringup.launch
 
  -->
 
