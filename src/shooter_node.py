@@ -7,7 +7,7 @@ import dynamixel_mx28 as dm28
 import rospy
 from geometry_msgs.msg import Vector3
 from os.path import expanduser
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Manager
 
 home = expanduser("~")
 
@@ -72,59 +72,18 @@ def find_pid_control(error, last_error):
     #rospy.loginfo(outString)
     with open((logfile), 'a') as outFile:
         outFile.write(outString+"\n")
-    return effort
+    return effort  
     
-def shoot():
-     with open('/sys/class/gpio/gpio388/value', 'w') as f:
-        f.write("1")  
-        
-def not_shoot():   
-     with open('/sys/class/gpio/gpio388/value', 'w') as f:
-        f.write("0")     
-    
-def shoot_gun(trigger):      
-
+def shoot_gun(trigger):
     start_time = time.time()
     last_flag = 0
     rate2 = rospy.Rate(30) # 10hz
     state = 0
     while not rospy.is_shutdown():
-        trig_flag = 0
-        try:
-            trig_flag = trigger.get_nowait()
-        except:
-            #rospy.loginfo("ERROR: Control Process found an empty queue")
-            pass
-        
-        if last_flag == 0 and trig_flag == 1: # found new target T1
-            state = 1
-            start_time = time.time()
-    
-        if trig_flag == 0: # T2 No target don't shoot
-            state = 2
-            
-        if state == 1:
-            rospy.loginfo("Shooting gun %d" %trigger.qsize())
-            shoot()
-            shooting_time = time.time() - start_time
-            if shooting_time > 1: # T3
-                start_time = time.time() # start time for not shooting
-                state = 2
-
-        elif state == 2:
-            rospy.loginfo("NNNNOOOTTTT Shooting gun %d" %trigger.qsize())
-            not_shoot()
-            if trig_flag != 0:
-                not_shooting_time = time.time() - start_time
-                if not_shooting_time > 1:
-                    state = 1
-                    start_time = time.time() # start time for shooting
-        
+        trig_flag = trigger[0]
+        with open('/sys/class/gpio/gpio388/value', 'w') as f:
+            f.write(str(trig_flag))               
         rate2.sleep()        
-        
-        
-        
- 
 
 if __name__ == '__main__':
     rospy.init_node('face_shooter', anonymous=True)
@@ -136,11 +95,15 @@ if __name__ == '__main__':
     control_effort = 0
     last_time = time.time()
     num_frames = 0
-    rate2 = rospy.Rate(100) # The max speed while setting speed on 1 dynamixel motor was 250 hz.
+    rate = rospy.Rate(100) # The max speed while setting speed on 1 dynamixel motor was 250 hz.
+
+    mgr = Manager()
+    trigger = mgr.list([0,])
     
-    trigger_queue = Queue(maxsize=1)    
-    p1 = Process(target=shoot_gun, args=(trigger_queue,))
+    p1 = Process(target=shoot_gun, args=(trigger,))
     p1.start()
+    
+    #dyna.set_moving_speed(300,1)      
     while not rospy.is_shutdown():
         if target_error != 99999:  
             #control_effort = find_pid_control(target_error,last_error)
@@ -148,13 +111,12 @@ if __name__ == '__main__':
             dyna.set_moving_speed2(int(control_effort))      
             # This section is used to watch timing for development purposes.
             if (-15 < target_error < 15):
-                trigger_queue.put(1) 
+                trigger[0] = 1
             else:
-                trigger_queue.put(0) 
-                    
+                trigger[0] = 0
         else:
-            dyna.set_moving_speed2(0)  
-            trigger_queue.put(0) 
+            dyna.set_moving_speed2(0)
+            trigger[0] = 0
         curr_time = time.time()
         num_frames += 1
         elapsed_time = curr_time - last_time
@@ -164,9 +126,7 @@ if __name__ == '__main__':
             num_frames = 0
         last_error = target_error
 
-        rate2.sleep()
-    trigger_queue.close()
-    trigger_queue.join_thread()    
+        rate.sleep()
     p1.join()
 
 '''

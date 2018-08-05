@@ -193,6 +193,22 @@ class dynamixel_mx28:
         else:
             effort = set_speed * -1 + 1024
         self.set_moving_speed(effort,dev_id)
+        
+        
+    # Accepts speed as dynmixel values where 0 and 1024 both are 0.
+    def set_moving_speed3(self,set_speed,dev_id=None):
+        if dev_id is None:
+            dev_id = self.dxl_id
+        if set_speed > 0:
+            effort = set_speed
+        else:
+            effort = set_speed * -1 + 1024            
+        
+        dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, dev_id, ADDR_MOVING_SPEED, set_speed)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("NOT COMM SUCCES: %s" % self.packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("TRANSMISSION ERROR: %s" % self.packetHandler.getRxPacketError(dxl_error))             
 
     def toggle_brake(self,dev_id=None):
         if dev_id is None:
@@ -216,7 +232,8 @@ if __name__ == "__main__":
     dyna1 = dynamixel_mx28(dxl_id=5)   
     dyna1.set_wheel_mode()
     dyna1.set_torque(5)
-    while(5):
-        print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(5),dyna1.get_present_position(5)))
+    while(1):
+        print("Pos1: %d, Pose2: %d" % (dyna1.get_present_position(1),dyna1.get_present_position(5)))
+        
         time.sleep(0.3)
 
