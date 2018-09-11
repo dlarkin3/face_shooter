@@ -1,4 +1,5 @@
 <launch>
+    <arg name="cfg_yaml"           default="$(find face_shooter)/config/track.yaml" />
 
     <!-- Start the USB Camera node 
     <node name="uvc_camera" pkg="uvc_camera" type="uvc_camera_node" output="screen" ns="usb_cam">
@@ -10,7 +11,7 @@
     </node>    -->
 
     <!-- Start the node to track a face in an video stream   -->
-   <rosparam file="$(find face_shooter)/config/track.yaml" command="load"/>   
+   <rosparam file="$(arg cfg_yaml)" command="load"/>   
    <node name="face_tracker" pkg="face_shooter" type="face_tracker2_node.py" output="screen"/>  
 
 </launch>
