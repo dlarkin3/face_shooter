@@ -1,0 +1,12 @@
+<launch>
+    <!-- load the detection parameters   -->
+    <arg name="cfg_yaml" default="$(find face_shooter)/config/track.yaml" />
+    <rosparam file="$(arg cfg_yaml)" command="load"/>
+
+    <!-- Start the node to track a face in an video stream   -->
+    <node pkg="face_shooter" type="face_tracker_imgmsg.py" name="face_tracker_imgmsg" output="screen" >
+        <param name="/subscribed_image_topic"    value="/ardrone/front/image_raw" />
+    </node>
+
+</launch>
+
