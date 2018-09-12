@@ -37,15 +37,6 @@ class face_tracker():
         except CvBridgeError as e:
             print(e)
 
-    def wait4image(self):
-        while not rospy.is_shutdown():
-            if (self.new_image):
-                print('new image received')
-                self.new_image = False
-            else:
-                print('waiting for new image')
-            self.rate.sleep() 
-
 if __name__ == '__main__':
     # Initialize the node and name it.
     rospy.init_node('face_tracker')
