@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# ========================================= #
+# Original author : Dom Larkin
+# converted from face_tracker2_node.py by Benjamin Abruzzo 2018-09-12
+# ========================================= #
 
 # Import required Python code.
 import sys
@@ -21,11 +25,11 @@ class face_tracker():
 
         # define ros publishers and subscribers
         self.image_topic = rospy.get_param('~subscribed_image_topic', '/ardrone/image_raw')
-        print('subscribing to: ' + self.image_topic)
+        # print('subscribing to: ' + self.image_topic)
         self.image_sub = rospy.Subscriber(self.image_topic,Image,self.image_callback)
         
         self.centroid_topic = rospy.get_param('~publishing_centroid_topic', '/face_centroid')
-        print('publishing on: ' + self.centroid_topic)
+        # print('publishing on: ' + self.centroid_topic)
         self.pub_centroid = rospy.Publisher(self.centroid_topic, Vector3, queue_size=1)  
 
     def image_callback(self,data):
