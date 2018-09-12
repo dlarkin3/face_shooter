@@ -15,18 +15,19 @@ import time
 class face_tracker():
     # Must have __init__(self) function for a class, similar to a C++ class constructor.
     def __init__(self):
-        # define ros publishers and subscribers
         self.new_image = False
         self.rate = rospy.Rate(30) # 30hz sleep rate for ros
         self.bridge = CvBridge()
-        self.pub_centroid = rospy.Publisher('/face_centroid', Vector3, queue_size=1)  
 
-        # subscribe to param image topic
+        # define ros publishers and subscribers
         self.image_topic = rospy.get_param('~subscribed_image_topic', '/ardrone/image_raw')
-        print('subscribing to:')
-        print(self.image_topic)
+        print('subscribing to: ' + self.image_topic)
         self.image_sub = rospy.Subscriber(self.image_topic,Image,self.image_callback)
         
+        self.centroid_topic = rospy.get_param('~publishing_centroid_topic', '/face_centroid')
+        print('publishing on: ' + self.centroid_topic)
+        self.pub_centroid = rospy.Publisher(self.centroid_topic, Vector3, queue_size=1)  
+
     def image_callback(self,data):
         # print('image_callback(self,data):')
         # call back to read image message and save it into the class
@@ -43,17 +44,12 @@ if __name__ == '__main__':
     # Go to class functions that do all the heavy lifting. Do error checking.
     try:
         ft = face_tracker()
-        # ft.wait4image()
     except rospy.ROSInterruptException: pass
 
     # Load params if provided else use the defaults
-    output_image_topic = rospy.get_param("output_image_topic","/face_detector/raw_image")
-    haar_file_face = home + "/" + rospy.get_param("haar_file_face","/ros/src/face_shooter/data/face.xml")
-    face_tracking = rospy.get_param("face_tracking","1")
-    display_original_image = rospy.get_param("display_original_image","1")
-    display_tracking_image = rospy.get_param("display_tracking_image","1")
-    # image_width = 
-    # image_height = 
+    haar_file_face = rospy.get_param("~haar_face_file")
+    display_original_image = rospy.get_param("display_original_image","0") #default is off
+    display_tracking_image = rospy.get_param("display_tracking_image","1") #default is on
 
     # Create the classifier
     face_cascade=cv2.CascadeClassifier(haar_file_face)
