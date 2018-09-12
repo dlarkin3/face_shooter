@@ -16,20 +16,35 @@ class face_tracker():
     # Must have __init__(self) function for a class, similar to a C++ class constructor.
     def __init__(self):
         # define ros publishers and subscribers
+        self.new_image = False
+        self.rate = rospy.Rate(30) # 30hz sleep rate for ros
         self.bridge = CvBridge()
         self.pub_centroid = rospy.Publisher('/face_centroid', Vector3, queue_size=1)  
 
         # subscribe to param image topic
         self.image_topic = rospy.get_param('~subscribed_image_topic', '/ardrone/image_raw')
-        self.image_sub = rospy.Subscriber("image_topic",Image,self.imgsub)
+        print('subscribing to:')
+        print(self.image_topic)
+        self.image_sub = rospy.Subscriber(self.image_topic,Image,self.image_callback)
         
-    def callback(self,data):
+    def image_callback(self,data):
+        # print('image_callback(self,data):')
         # call back to read image message and save it into the class
         try:
+            # print('try:')
             self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
             self.new_image = True
         except CvBridgeError as e:
             print(e)
+
+    def wait4image(self):
+        while not rospy.is_shutdown():
+            if (self.new_image):
+                print('new image received')
+                self.new_image = False
+            else:
+                print('waiting for new image')
+            self.rate.sleep() 
 
 if __name__ == '__main__':
     # Initialize the node and name it.
@@ -37,6 +52,7 @@ if __name__ == '__main__':
     # Go to class functions that do all the heavy lifting. Do error checking.
     try:
         ft = face_tracker()
+        # ft.wait4image()
     except rospy.ROSInterruptException: pass
 
     # Load params if provided else use the defaults
@@ -56,7 +72,10 @@ if __name__ == '__main__':
     num_frames = 0
     rate = rospy.Rate(30) # 30hz
     while not rospy.is_shutdown():
+        # print('while not rospy.is_shutdown():')
         if (ft.new_image):
+            if (display_original_image): # Dispaly the image if param is set to true       
+                cv2.imshow('original',ft.cv_image)              
             # convert new image to gray scale
             gray = cv2.cvtColor(ft.cv_image, cv2.COLOR_BGR2GRAY)
             # Use the classifier to find faces
@@ -64,13 +83,16 @@ if __name__ == '__main__':
             center=Vector3()
             for index,(x,y,w,h) in enumerate(faces): # For each face publish the centroid
                 #print("Frame is: %d by %d and x,y %d, %d" %(frame.shape[1],frame.shape[0],x,y))
-                frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2) # Draw a frame around each face
+                ft.cv_tracking = cv2.rectangle(ft.cv_image,(x,y),(x+w,y+h),(255,0,0),2) # Draw a frame around each face
+                cv2.imshow('tracking',ft.cv_tracking)
                 # publish center of face
                 center.x=x+w/2
                 center.y=y+h/2
                 center.z=index+1 # unique id for multiple faces, zero indexed
             if center.z != 0: # then at least one face was found
-                pub.publish(center)
+                ft.pub_centroid.publish(center)
+
+        cv2.waitKey(1) # Needed for showing image
         # wait for new image to arrive
         rate.sleep() 
     # when done
