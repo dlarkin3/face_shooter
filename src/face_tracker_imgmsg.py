@@ -21,7 +21,7 @@ class face_tracker():
     def __init__(self):
         self.new_image = False
         self.img_time = rospy.get_time()
-        print("%% init time: {} \n\n").format(self.img_time)
+        # print("%% init time: {} \n\n").format(self.img_time)
         self.rate = rospy.Rate(30) # 30hz sleep rate for ros
         self.bridge = CvBridge()
 
@@ -34,17 +34,20 @@ class face_tracker():
         # print('publishing on: ' + self.centroid_topic)
         self.pub_centroid = rospy.Publisher(self.centroid_topic, Vector3, queue_size=1)  
 
+        self.display_original_image = rospy.get_param("~display_original_image",False) #default is off
+        self.display_tracking_image = rospy.get_param("~display_tracking_image",True) #default is on
+        # if (self.display_original_image): # Dispaly the image if param is set to true       
+        #     print('self.display_original_image: {}').format(self.display_original_image)
+
     def image_callback(self,data):
         # print('image_callback(self,data):')
         # call back to read image message and save it into the class
         try:
-            # print('try:')
-            img_msg_time = data.stamp.to_sec()
-            print("%% new image time time: {} \n\n").format(self.img_msg_time)
-            if (img_msg_time != self.img_time)
-                self.new_image = True
+            img_msg_time = data.header.stamp.to_sec()
+            if (img_msg_time != self.img_time): # Dispaly the image if param is set to true       
                 self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-                self,img_time = img_msg_time
+                self.new_image = True
+                self.img_time = img_msg_time
 
         except CvBridgeError as e:
             print(e)
@@ -59,8 +62,6 @@ if __name__ == '__main__':
 
     # Load params if provided else use the defaults
     haar_file_face = rospy.get_param("~haar_face_file")
-    display_original_image = rospy.get_param("display_original_image","0") #default is off
-    display_tracking_image = rospy.get_param("display_tracking_image","1") #default is on
 
     # Create the classifier
     face_cascade=cv2.CascadeClassifier(haar_file_face)
@@ -72,8 +73,8 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         # print('while not rospy.is_shutdown():')
         if (ft.new_image):
-            if (display_original_image): # Dispaly the image if param is set to true       
-                cv2.imshow('original',ft.cv_image)              
+            if (ft.display_original_image): # Dispaly the image if param is set to true       
+                cv2.imshow('original',ft.cv_image)
             # convert new image to gray scale
             gray = cv2.cvtColor(ft.cv_image, cv2.COLOR_BGR2GRAY)
             # Use the classifier to find faces
@@ -82,7 +83,8 @@ if __name__ == '__main__':
             for index,(x,y,w,h) in enumerate(faces): # For each face publish the centroid
                 #print("Frame is: %d by %d and x,y %d, %d" %(frame.shape[1],frame.shape[0],x,y))
                 ft.cv_tracking = cv2.rectangle(ft.cv_image,(x,y),(x+w,y+h),(255,0,0),2) # Draw a frame around each face
-                cv2.imshow('tracking',ft.cv_tracking)
+                if (ft.display_tracking_image): # Dispaly the image if param is set to true       
+                    cv2.imshow('tracking',ft.cv_tracking)
                 # publish center of face
                 center.x=x+w/2
                 center.y=y+h/2
