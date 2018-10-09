@@ -20,6 +20,8 @@ class face_tracker():
     # Must have __init__(self) function for a class, similar to a C++ class constructor.
     def __init__(self):
         self.new_image = False
+        self.img_time = rospy.get_time()
+        print("%% init time: {} \n\n").format(self.img_time)
         self.rate = rospy.Rate(30) # 30hz sleep rate for ros
         self.bridge = CvBridge()
 
@@ -37,8 +39,13 @@ class face_tracker():
         # call back to read image message and save it into the class
         try:
             # print('try:')
-            self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-            self.new_image = True
+            img_msg_time = data.stamp.to_sec()
+            print("%% new image time time: {} \n\n").format(self.img_msg_time)
+            if (img_msg_time != self.img_time)
+                self.new_image = True
+                self.cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+                self,img_time = img_msg_time
+
         except CvBridgeError as e:
             print(e)
 
@@ -82,6 +89,7 @@ if __name__ == '__main__':
                 center.z=index+1 # unique id for multiple faces, zero indexed
             if center.z != 0: # then at least one face was found
                 ft.pub_centroid.publish(center)
+            ft.new_image = False
 
         cv2.waitKey(1) # Needed for showing image
         # wait for new image to arrive
