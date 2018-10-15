@@ -2,6 +2,7 @@
 # ========================================= #
 # Original author : Dom Larkin
 # converted from face_tracker2_node.py by Benjamin Abruzzo 2018-09-12
+# Used by usma_ardrone package for face tracking by an AR drone
 # ========================================= #
 
 # Import required Python code.
@@ -55,7 +56,6 @@ class face_tracker():
 if __name__ == '__main__':
     # Initialize the node and name it.
     rospy.init_node('face_tracker')
-    # Go to class functions that do all the heavy lifting. Do error checking.
     try:
         ft = face_tracker()
     except rospy.ROSInterruptException: pass
